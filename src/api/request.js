@@ -19,7 +19,6 @@ const requests = axios.create({
 requests.interceptors.request.use((config) => {
   // config：配置对象，里面有个很重要的属性 headers
   // 进度条开始
-  console.log(config);
   nprogress.start();
   return config;
 });
