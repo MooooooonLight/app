@@ -7,6 +7,9 @@ Vue.component(TypeNav.name, TypeNav);
 import router from "@/router";
 // 引入仓库
 import store from "./store";
+// 引入mock数据
+import "@/mock/mockServe";
+
 // 阻止显示生产模式的消息
 Vue.config.productionTip = false;
 

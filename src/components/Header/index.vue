@@ -53,12 +53,18 @@ export default {
     // 搜索按钮的回调函数
     goSearch () {
       // 路由传递参数
-      // 第一种：字符串形式
-      this.$router.push('/search/' + this.keyword + "?k=" + this.keyword.toUpperCase())
-      // 第二种：模板字符串
-      this.$router.push(`/search/${this.keyword}?k=${this.keyword.toUpperCase()}`)
+      // // 第一种：字符串形式
+      // this.$router.push('/search/' + this.keyword + "?k=" + this.keyword.toUpperCase())
+      // // 第二种：模板字符串
+      // this.$router.push(`/search/${this.keyword}?k=${this.keyword.toUpperCase()}`)
       // 第三种：对象
-      this.$router.push({ name: 'search', params: { keyword: this.keyword }, query: { k: this.keyword.toUpperCase() } })
+      const location = { name: 'search', params: { keyword: this.keyword || undefined } }
+
+      if (this.$route.query) {
+        location.query = this.$route.query
+      }
+      this.$router.push(location)
+
     }
   }
 

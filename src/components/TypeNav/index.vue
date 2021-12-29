@@ -1,7 +1,7 @@
 <template>
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <h2 class="all" @mouseenter="enterShow" @mouseleave="leaveShow">全部商品分类</h2>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -13,49 +13,52 @@
         <a href="###">秒杀</a>
       </nav>
       <!-- 三级联动 -->
-      <div class="sort">
-        <div class="all-sort-list2" @click="goSearch">
-          <div
-            class="item"
-            @mouseenter="changeIndex(index)"
-            @mouseleave="leaveIndex"
-            v-for="(c1, index) in categoryList"
-            :key="c1.categoryId"
-            :class="{ cur: currentIndex == index }"
-          >
-            <h3>
-              <a
-                :data-categoryName="c1.categoryName"
-                :data-category1Id="c1.categoryId"
-              >{{ c1.categoryName }}</a>
-            </h3>
-            <!-- 二级、三级分类 -->
+      <!-- 过度动画 -->
+      <transition name="sort">
+        <div class="sort" v-show="show">
+          <div class="all-sort-list2" @click="goSearch">
             <div
-              class="item-list clearfix"
-              :style="{ display: currentIndex == index ? 'block' : 'none' }"
+              class="item"
+              @mouseenter="changeIndex(index)"
+              @mouseleave="leaveIndex"
+              v-for="(c1, index) in categoryList"
+              :key="c1.categoryId"
+              :class="{ cur: currentIndex == index }"
             >
-              <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
-                <dl class="fore">
-                  <dt>
-                    <a
-                      :data-categoryName="c2.categoryName"
-                      :data-category2Id="c2.categoryId"
-                    >{{ c2.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+              <h3>
+                <a
+                  :data-categoryName="c1.categoryName"
+                  :data-category1Id="c1.categoryId"
+                >{{ c1.categoryName }}</a>
+              </h3>
+              <!-- 二级、三级分类 -->
+              <div
+                class="item-list clearfix"
+                :style="{ display: currentIndex == index ? 'block' : 'none' }"
+              >
+                <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
+                  <dl class="fore">
+                    <dt>
                       <a
-                        :data-categoryName="c3.categoryName"
-                        :data-category3Id="c3.categoryId"
-                      >{{ c3.categoryName }}</a>
-                    </em>
-                  </dd>
-                </dl>
+                        :data-categoryName="c2.categoryName"
+                        :data-category2Id="c2.categoryId"
+                      >{{ c2.categoryName }}</a>
+                    </dt>
+                    <dd>
+                      <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+                        <a
+                          :data-categoryName="c3.categoryName"
+                          :data-category3Id="c3.categoryId"
+                        >{{ c3.categoryName }}</a>
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -67,12 +70,18 @@ export default {
   data () {
     return {
       // 储存鼠标在哪一个分类
-      currentIndex: -1
+      currentIndex: -1,
+      show: true
     };
   },
   // 组件挂载完毕，可以向服务器发送请求
   mounted () {
-    this.$store.dispatch('categoryList')
+    // 判断是哪个路由组件
+    if (this.$route.path == '/home') {
+      this.show = true
+    } else if (this.$route.path == '/search') {
+      this.show = false
+    }
   },
   computed: {
     ...mapState({
@@ -96,23 +105,39 @@ export default {
       // 所以需要给a标签加上自定义属性 event.target.dataset可以获取自定义属性（无视大小写）
       const element = event.target;
 
-      const { categoryname, categort1id, categort2id, categort3id } = element.dataset
+      const { categoryname, category1id, category2id, category3id } = element.dataset
 
       if (categoryname) {
         const location = { name: "search" }
         const query = { categoryName: categoryname }
-        if (categort1id) {
-          query.categort1Id = categort1id
-        } else if (categort2id) {
-          query.categort2Id = categort2id
+        if (category1id) {
+          query.category1Id = category1id
+        } else if (category2id) {
+          query.category2Id = category2id
         } else {
-          query.categort3Id = categort3id
+          query.category3Id = category3id
+        }
+        // 如果路由中有params参数，捎带上
+        if (this.$route.params) {
+          location.params = this.$route.params
         }
         // 整理参数
         location.query = query
         // 发送路由
         this.$router.push(location)
       }
+    },
+    // 鼠标进入，商品列表显示
+    enterShow () {
+      this.show = true
+    },
+    // 鼠标离开，商品列表隐藏
+    leaveShow () {
+      this.currentIndex = -1
+      if (this.$route.path == '/search') {
+        this.show = false
+      }
+
     }
   }
 }
@@ -240,6 +265,26 @@ export default {
         }
       }
     }
+    // 过度动画的样式
+    // 过度动画开始状态
+    .sort-enter {
+      height: 0;
+    }
+    .sort-enter-to {
+      height: 461px;
+    }
+    .sort-enter-active {
+      transition: all 0.5s linear;
+    }
+    // .sort-leave {
+    //   height: 461px;
+    // }
+    // .sort-leave-to {
+    //   height: 0px;
+    // }
+    // .sort-leave-active {
+    //   transition: all 0.5s linear;
+    // }
   }
 }
 </style>
