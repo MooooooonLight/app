@@ -12,8 +12,9 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
+      <!-- 三级联动 -->
       <div class="sort">
-        <div class="all-sort-list2">
+        <div class="all-sort-list2" @click="goSearch">
           <div
             class="item"
             @mouseenter="changeIndex(index)"
@@ -23,17 +24,30 @@
             :class="{ cur: currentIndex == index }"
           >
             <h3>
-              <a href>{{ c1.categoryName }}</a>å
+              <a
+                :data-categoryName="c1.categoryName"
+                :data-category1Id="c1.categoryId"
+              >{{ c1.categoryName }}</a>
             </h3>
-            <div class="item-list clearfix">
+            <!-- 二级、三级分类 -->
+            <div
+              class="item-list clearfix"
+              :style="{ display: currentIndex == index ? 'block' : 'none' }"
+            >
               <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
                 <dl class="fore">
                   <dt>
-                    <a href>{{ c2.categoryName }}</a>
+                    <a
+                      :data-categoryName="c2.categoryName"
+                      :data-category2Id="c2.categoryId"
+                    >{{ c2.categoryName }}</a>
                   </dt>
                   <dd>
                     <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
-                      <a href>{{ c3.categoryName }}</a>
+                      <a
+                        :data-categoryName="c3.categoryName"
+                        :data-category3Id="c3.categoryId"
+                      >{{ c3.categoryName }}</a>
                     </em>
                   </dd>
                 </dl>
@@ -47,6 +61,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import throttle from 'lodash/throttle'
 export default {
   name: "TypeNav",
   data () {
@@ -67,13 +82,37 @@ export default {
     })
   },
   methods: {
-    // 一级菜单鼠标进入
-    changeIndex (index) {
+    // 一级菜单鼠标进入(节流50ms)
+    changeIndex: throttle(function (index) {
       this.currentIndex = index
-    },
+    }, 50),
     // 一级菜单鼠标移出
     leaveIndex () {
       this.currentIndex = -1
+    },
+    goSearch (event) {
+      // 采用编程式导航+事件委派完成路由跳转以及传参
+      // 事件委派需要保证点击子标签类型为a时才进行跳转，并且需要区分是哪一级的a标签
+      // 所以需要给a标签加上自定义属性 event.target.dataset可以获取自定义属性（无视大小写）
+      const element = event.target;
+
+      const { categoryname, categort1id, categort2id, categort3id } = element.dataset
+
+      if (categoryname) {
+        const location = { name: "search" }
+        const query = { categoryName: categoryname }
+        if (categort1id) {
+          query.categort1Id = categort1id
+        } else if (categort2id) {
+          query.categort2Id = categort2id
+        } else {
+          query.categort3Id = categort3id
+        }
+        // 整理参数
+        location.query = query
+        // 发送路由
+        this.$router.push(location)
+      }
     }
   }
 }
@@ -190,11 +229,11 @@ export default {
             }
           }
 
-          &:hover {
-            .item-list {
-              display: block;
-            }
-          }
+          // &:hover {
+          //   // .item-list {
+          //   //   display: block;
+          //   // }
+          // }
         }
         .cur {
           background-color: skyblue;
