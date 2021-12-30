@@ -9,6 +9,8 @@ import router from "@/router";
 import store from "./store";
 // 引入mock数据
 import "@/mock/mockServe";
+// 引入swiper样式
+import  "swiper/css/swiper.css";
 
 // 阻止显示生产模式的消息
 Vue.config.productionTip = false;
