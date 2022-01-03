@@ -84,7 +84,7 @@
 </template>
 <script>
 export default {
-  name: "component_name",
+  name: "Rank",
   data () {
     return {
     };

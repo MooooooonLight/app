@@ -26,7 +26,7 @@
 </template>
 <script>
 export default {
-  name: "component_name",
+  name: "Recommend",
   data () {
     return {
     };

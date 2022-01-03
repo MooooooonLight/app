@@ -25,7 +25,7 @@ import Floor from "./Floor/index.vue";
 import Brand from "./Brand/index.vue";
 import { mapState } from "vuex";
 export default {
-  name: "home",
+  name: "Home",
   data () {
     return {};
   },

@@ -56,7 +56,7 @@
 </template>
 <script>
 export default {
-  name: "component_name",
+  name: "Like",
   data () {
     return {
     };

@@ -38,7 +38,7 @@
 </template>
 <script>
 export default {
-  name: "component_name",
+  name: "Brand",
   data () {
     return {
     };

@@ -1,64 +1,66 @@
 <template>
   <div class="type-nav">
     <div class="container">
-      <h2 class="all" @mouseenter="enterShow" @mouseleave="leaveShow">全部商品分类</h2>
-      <nav class="nav">
-        <a href="###">服装城</a>
-        <a href="###">美妆馆</a>
-        <a href="###">尚品汇超市</a>
-        <a href="###">全球购</a>
-        <a href="###">闪购</a>
-        <a href="###">团购</a>
-        <a href="###">有趣</a>
-        <a href="###">秒杀</a>
-      </nav>
-      <!-- 三级联动 -->
-      <!-- 过度动画 -->
-      <transition name="sort">
-        <div class="sort" v-show="show">
-          <div class="all-sort-list2" @click="goSearch">
-            <div
-              class="item"
-              @mouseenter="changeIndex(index)"
-              @mouseleave="leaveIndex"
-              v-for="(c1, index) in categoryList"
-              :key="c1.categoryId"
-              :class="{ cur: currentIndex == index }"
-            >
-              <h3>
-                <a
-                  :data-categoryName="c1.categoryName"
-                  :data-category1Id="c1.categoryId"
-                >{{ c1.categoryName }}</a>
-              </h3>
-              <!-- 二级、三级分类 -->
+      <div @mouseleave="leaveShow">
+        <h2 class="all" @mouseenter="enterShow">全部商品分类</h2>
+        <nav class="nav">
+          <a href="###">服装城</a>
+          <a href="###">美妆馆</a>
+          <a href="###">尚品汇超市</a>
+          <a href="###">全球购</a>
+          <a href="###">闪购</a>
+          <a href="###">团购</a>
+          <a href="###">有趣</a>
+          <a href="###">秒杀</a>
+        </nav>
+        <!-- 三级联动 -->
+        <!-- 过度动画 -->
+        <transition name="sort">
+          <div class="sort" v-show="show">
+            <div class="all-sort-list2" @click="goSearch">
               <div
-                class="item-list clearfix"
-                :style="{ display: currentIndex == index ? 'block' : 'none' }"
+                class="item"
+                @mouseenter="changeIndex(index)"
+                @mouseleave="leaveIndex"
+                v-for="(c1, index) in categoryList"
+                :key="c1.categoryId"
+                :class="{ cur: currentIndex == index }"
               >
-                <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
-                  <dl class="fore">
-                    <dt>
-                      <a
-                        :data-categoryName="c2.categoryName"
-                        :data-category2Id="c2.categoryId"
-                      >{{ c2.categoryName }}</a>
-                    </dt>
-                    <dd>
-                      <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+                <h3>
+                  <a
+                    :data-categoryName="c1.categoryName"
+                    :data-category1Id="c1.categoryId"
+                  >{{ c1.categoryName }}</a>
+                </h3>
+                <!-- 二级、三级分类 -->
+                <div
+                  class="item-list clearfix"
+                  :style="{ display: currentIndex == index ? 'block' : 'none' }"
+                >
+                  <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
+                    <dl class="fore">
+                      <dt>
                         <a
-                          :data-categoryName="c3.categoryName"
-                          :data-category3Id="c3.categoryId"
-                        >{{ c3.categoryName }}</a>
-                      </em>
-                    </dd>
-                  </dl>
+                          :data-categoryName="c2.categoryName"
+                          :data-category2Id="c2.categoryId"
+                        >{{ c2.categoryName }}</a>
+                      </dt>
+                      <dd>
+                        <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+                          <a
+                            :data-categoryName="c3.categoryName"
+                            :data-category3Id="c3.categoryId"
+                          >{{ c3.categoryName }}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </transition>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +78,8 @@ export default {
   },
   // 组件挂载完毕，可以向服务器发送请求
   mounted () {
+    // 隐藏三级联动
+    this.show = false;
     // 判断是哪个路由组件
     if (this.$route.path == '/home') {
       this.show = true
@@ -134,7 +138,7 @@ export default {
     // 鼠标离开，商品列表隐藏
     leaveShow () {
       this.currentIndex = -1
-      if (this.$route.path == '/search') {
+      if (this.$route.path != '/home') {
         this.show = false
       }
 
