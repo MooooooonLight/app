@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import home from "./home";
 import search from "./search";
+import detail from "./detail";
 // 使用插件一次
 Vue.use(Vuex);
 // // state 仓库储存数据的地方
@@ -19,5 +20,6 @@ export default new Vuex.Store({
   modules: {
     home,
     search,
+    detail,
   },
 });
