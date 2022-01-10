@@ -4,6 +4,8 @@ import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import Search from "@/pages/Search";
 import Detail from "@/pages/Detail";
+import AddCartSuccess from "@/pages/AddCartSuccess";
+import ShopCart from "@/pages/ShopCart";
 
 // 配置路由
 export default [
@@ -35,6 +37,18 @@ export default [
     name: "detail",
     path: "/detail/:skuId",
     component: Detail,
+    meta: { show: true },
+  },
+  {
+    name: "addcartsuccess",
+    path: "/addcartsuccess",
+    component: AddCartSuccess,
+    meta: { show: true },
+  },
+  {
+    name: "shopcart",
+    path: "/shopcart",
+    component: ShopCart,
     meta: { show: true },
   },
   // 重定向，在项目跑起来的时候，访问/立马定向到首页

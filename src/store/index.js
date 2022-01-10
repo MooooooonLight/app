@@ -3,6 +3,8 @@ import Vuex from "vuex";
 import home from "./home";
 import search from "./search";
 import detail from "./detail";
+import shopcart from "./shopcart";
+import user from "./user";
 // 使用插件一次
 Vue.use(Vuex);
 // // state 仓库储存数据的地方
@@ -21,5 +23,7 @@ export default new Vuex.Store({
     home,
     search,
     detail,
+    shopcart,
+    user,
   },
 });

@@ -82,7 +82,9 @@
                 <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : skuNum = 1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <!-- 此处的路由跳转，从A路由跳转到B路由 进行路由跳转之前
+                把购买的产品信息通过请求的形式通知服务器 服务器进行响应的存储-->
+                <a @click="addShopCar">加入购物车</a>
               </div>
             </div>
           </div>
@@ -121,7 +123,7 @@
                     <i>6088.00</i>
                   </div>
                   <div class="operate">
-                    <a href="javascript:void(0);">加入购物车</a>
+                    <a>加入购物车</a>
                   </div>
                 </div>
               </li>
@@ -360,6 +362,23 @@ export default {
         this.skuNum = 1
       } else {
         this.skuNum = parseInt(value)
+      }
+    },
+    // 加入购物车的回调函数
+    async addShopCar () {
+      // 1 发服务器请求
+      // 成功进行路由跳转
+      // 失败提示用户
+      try {
+        await this.$store.dispatch('addOrUpdateShopCart',
+          { skuId: this.$route.params.skuId, skuNum: this.skuNum })
+        // 进行路由跳转
+        this.$router.push({ name: 'addcartsuccess', query: { skuNum: this.skuNum } })
+        // 一些简单的数据通过query转移 复杂的数据使用会话存储（不持久）
+        sessionStorage.setItem('SKUINFO', JSON.stringify(this.skuInfo))
+        // 在路由跳转的时候还需要将产品的信息带给下一级的路由组件
+      } catch (error) {
+        alert(error.message)
       }
     }
   }
