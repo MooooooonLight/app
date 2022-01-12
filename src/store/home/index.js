@@ -29,7 +29,6 @@ const actions = {
     if (result.code == 200) {
       commit("GETCATEGORYLIST", result.data);
     }
-    console.log(result.data);
   },
   // 获取首页轮播图数据
   async getBannerList({ commit }) {

@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  name: 'Register',
+  name: "Register",
   data () {
     return {
       // 收集表单数据---手机号
@@ -72,27 +72,32 @@ export default {
       // 确认密码
       password1: "",
       // 是否同意协议
-      agree: true
+      agree: true,
     }
   },
   methods: {
     // 获取验证码
     async getCode () {
-      console.log(this)
       try {
         // 简单判断一下
         const { phone } = this
-        phone && (await this.$store.dispatch('getCode', phone))
+        phone && (await this.$store.dispatch("getCode", phone))
         this.code = this.$store.state.user.code
       } catch (error) { }
     },
     // 用户注册
-    userRegister () {
-      console.log(this)
-      const { phone, code, password, password1 } = this
-      (phone && code && password == password1) && this.$store.dispatch('reqUserRegister', { phone, code, password })
-    }
-  }
+    async userRegister () {
+      try {
+        // 如果成功，跳转到登录
+        const { phone, code, password, password1 } = this
+        phone && code && password == password1 &&
+          await this.$store.dispatch("userRegister", { phone, code, password })
+        this.$router.push('/login')
+      } catch (error) {
+        alert(error.message)
+      }
+    },
+  },
 }
 </script>
 

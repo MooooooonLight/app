@@ -64,14 +64,21 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl v-for="(spuSaleAttr,index) in spuSaleAttrList" :key="spuSaleAttr.id">
+              <dl v-for="(spuSaleAttr, index) in spuSaleAttrList" :key="spuSaleAttr.id">
                 <dt class="title">{{ spuSaleAttr.saleAttrName }}</dt>
                 <dd
                   changepirce="0"
                   :class="{ active: spuSaleAttrValue.isChecked == 1 }"
-                  v-for="(spuSaleAttrValue,index) in spuSaleAttr.spuSaleAttrValueList"
+                  v-for="(
+                    spuSaleAttrValue, index
+                  ) in spuSaleAttr.spuSaleAttrValueList"
                   :key="spuSaleAttrValue.id"
-                  @click="changeActive(spuSaleAttrValue, spuSaleAttr.spuSaleAttrValueList)"
+                  @click="
+                    changeActive(
+                      spuSaleAttrValue,
+                      spuSaleAttr.spuSaleAttrValueList
+                    )
+                  "
                 >{{ spuSaleAttrValue.saleAttrValueName }}</dd>
               </dl>
             </div>
@@ -79,7 +86,7 @@
               <div class="controls">
                 <input autocomplete="off" class="itxt" v-model="skuNum" @change="changeSkuNum" />
                 <a href="javascript:" class="plus" @click="skuNum++">+</a>
-                <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : skuNum = 1">-</a>
+                <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : (skuNum = 1)">-</a>
               </div>
               <div class="add">
                 <!-- 此处的路由跳转，从A路由跳转到B路由 进行路由跳转之前
@@ -323,45 +330,45 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import ImageList from './ImageList/ImageList'
-import Zoom from './Zoom/Zoom'
+import { mapGetters } from "vuex";
+import ImageList from "./ImageList/ImageList";
+import Zoom from "./Zoom/Zoom";
 
 export default {
-  name: 'Detail',
+  name: "Detail",
   data () {
     return {
       // 购买产品的个数
-      skuNum: 1
-    }
+      skuNum: 1,
+    };
   },
   components: {
     ImageList,
-    Zoom
+    Zoom,
   },
   mounted () {
     // 派发action 获取详情信息
-    this.$store.dispatch('getGoodsInfo', this.$route.params.skuId)
+    this.$store.dispatch("getGoodsInfo", this.$route.params.skuId);
   },
   computed: {
-    ...mapGetters(['categoryView', 'skuInfo', 'spuSaleAttrList'])
+    ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
   },
   methods: {
     changeActive (saleAttrValue, arr) {
       // 遍历全部售卖属性值isChecked为零 取消高亮
-      arr.forEach(item => {
-        item.isChecked = 0
+      arr.forEach((item) => {
+        item.isChecked = 0;
       });
       // 点击的属性值
-      saleAttrValue.isChecked = 1
+      saleAttrValue.isChecked = 1;
     },
     changeSkuNum (event) {
-      let value = event.target.value * 1
+      let value = event.target.value * 1;
 
       if (isNaN(value) || value < 1) {
-        this.skuNum = 1
+        this.skuNum = 1;
       } else {
-        this.skuNum = parseInt(value)
+        this.skuNum = parseInt(value);
       }
     },
     // 加入购物车的回调函数
@@ -370,20 +377,24 @@ export default {
       // 成功进行路由跳转
       // 失败提示用户
       try {
-        await this.$store.dispatch('addOrUpdateShopCart',
-          { skuId: this.$route.params.skuId, skuNum: this.skuNum })
+        await this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: this.$route.params.skuId,
+          skuNum: this.skuNum,
+        });
         // 进行路由跳转
-        this.$router.push({ name: 'addcartsuccess', query: { skuNum: this.skuNum } })
+        this.$router.push({
+          name: "addcartsuccess",
+          query: { skuNum: this.skuNum },
+        });
         // 一些简单的数据通过query转移 复杂的数据使用会话存储（不持久）
-        sessionStorage.setItem('SKUINFO', JSON.stringify(this.skuInfo))
+        sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
         // 在路由跳转的时候还需要将产品的信息带给下一级的路由组件
       } catch (error) {
-        alert(error.message)
+        alert(error.message);
       }
-    }
-  }
-
-}
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
